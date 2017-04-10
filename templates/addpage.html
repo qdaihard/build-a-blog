@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>What's on your mind?</h2>
+
+<form method="post">
+    <label>
+        <div>title</div>
+        <input type="text" name="title">
+    </label>
+
+    <label>
+        <div>post</div>
+        <input type="textarea" name="post">
+    </label>
+</form>
+
+{% endblock %}
