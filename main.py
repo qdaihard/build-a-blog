@@ -23,8 +23,8 @@ from google.appengine.ext import db
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
-class MainHandler(webapp2.RequestHandler):
-    '''def write(self, *a, **kw):
+class Handler(webapp2.RequestHandler):
+    def write(self, *a, **kw):
         self.response.write(*a, **kw)
 
     def render_str(self,template, **params):
@@ -32,14 +32,39 @@ class MainHandler(webapp2.RequestHandler):
         return t.render(params)
 
     def render(self, template, **kw):
-        self.write(self.render_str(template, **kw))'''
+        self.write(self.render_str(template, **kw))
+
+class Blogpost(db.Model):
+    title = db.StringProperty(required = True)
+    blogpost = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+
+class MainPage(Handler):
+    def render_front(self, title="", blogpost="", error=""):
+        entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC")
+        
+        self.render("addpage.html", title=title, blogpost=blogpost, error=error)
 
     def get(self):
-        t = jinja_env.get_template("addpage.html")
-        content = t.render()
+        #t = jinja_env.get_template("addpage.html")
+        #content = t.render()
         #self.response.write(content)
-        self.response.write(content)
+        self.render_front()
+
+    def post(self):
+        title = self.request.get('title')
+        blogpost = self.request.get('post')
+
+        if title and blogpost:
+            entry = Blogpost(title = title, blogpost = blogpost)
+            entry.put()
+
+            self.redirect("/")
+        else:
+            error = "Please enter BOTH a title and the content of your blogpost!"
+            self.render_front(title, blogpost, error)
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', MainPage)
 ], debug=True)
