@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% for blogpost in entries_templates %}
+
+        <div> {{blogpost.title}} </div>
+        <div> {{blogpost.blogpost}}</div>
+
+    {% endfor %}
+{% endblock %}

@@ -39,17 +39,12 @@ class Blogpost(db.Model):
     blogpost = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
-class MainPage(Handler):
-    def render_front(self, title="", blogpost="", error=""):
-        entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC")
-        
+class NewPost(Handler):
+    def render_add(self, title="", blogpost="", error=""):
         self.render("addpage.html", title=title, blogpost=blogpost, error=error)
 
     def get(self):
-        #t = jinja_env.get_template("addpage.html")
-        #content = t.render()
-        #self.response.write(content)
-        self.render_front()
+        self.render_add()
 
     def post(self):
         title = self.request.get('title')
@@ -58,13 +53,20 @@ class MainPage(Handler):
         if title and blogpost:
             entry = Blogpost(title = title, blogpost = blogpost)
             entry.put()
-
-            self.redirect("/")
+            self.redirect("/blog")
         else:
             error = "Please enter BOTH a title and the content of your blogpost!"
-            self.render_front(title, blogpost, error)
+            self.render_add(title, blogpost, error)
 
+class MainPage(Handler):
+    def render_front(self):
+        entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC LIMIT 5")
+        self.render("front-page.html", entries_templates = entries)
+
+    def get(self):
+        self.render_front()
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage)
+    ('/blog', MainPage),
+    ('/newpost', NewPost)
 ], debug=True)
