@@ -54,7 +54,7 @@ class NewPost(Handler):
         if title and blogpost:
             entry = Blogpost(title = title, blogpost = blogpost)
             entry.put()
-            self.redirect("/blog")
+            self.redirect("/blog/" + str(entry.key().id()))
         else:
             error = "Please enter BOTH a title and the content of your blogpost!"
             self.render_add(title, blogpost, error)

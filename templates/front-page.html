@@ -5,7 +5,7 @@
 {% for blogpost in entries_templates %}
 
     <div><h3><a href="/blog/{{ blogpost.key().id() }}"> {{blogpost.title}} </a></h3></div>
-    <div> {{blogpost.blogpost}}</div>
+    <div>{{blogpost.blogpost}}</div>
 
 {% endfor %}
 
