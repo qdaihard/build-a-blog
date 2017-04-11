@@ -2,12 +2,14 @@
 
 {% block content %}
 
+<ol>
 {% for blogpost in entries_templates %}
-
+<li>
     <div><h3><a href="/blog/{{ blogpost.key().id() }}"> {{blogpost.title}} </a></h3></div>
     <div>{{blogpost.blogpost}}</div>
-
+</li>
 {% endfor %}
+</ol>
 
 <div class="error">{{ error }}</div>
 

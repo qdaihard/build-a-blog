@@ -64,7 +64,7 @@ class MainPage(Handler):
         entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC LIMIT 5")
         error = self.request.get("error")
 
-        self.render("front-page.html", entries_templates = entries)
+        self.render("front-page.html", entries_templates = entries, error = error)
 
     def get(self):
         self.render_front()
@@ -75,9 +75,8 @@ class ViewPostHandler(Handler):
         if entry:
             self.render("blogpost.html", blogpost = Blogpost.get_by_id(int(id)))
         else:
-            error = "This blogpost does not exist"
-            self.redirect("/blog/?error=" + cgi.escape(error))
-
+            error = "The blogpost entry you're trying to access does not exist"
+            self.redirect("/blog?error=" + cgi.escape(error))
 
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
