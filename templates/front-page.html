@@ -2,10 +2,13 @@
 
 {% block content %}
 
-    {% for blogpost in entries_templates %}
+{% for blogpost in entries_templates %}
 
-        <div> {{blogpost.title}} </div>
-        <div> {{blogpost.blogpost}}</div>
+    <div><h3> {{blogpost.title}} </h3></div>
+    <div> {{blogpost.blogpost}}</div>
 
-    {% endfor %}
+{% endfor %}
+
+<div class="error">{{ error }}</div>
+
 {% endblock %}
