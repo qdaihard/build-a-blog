@@ -63,7 +63,8 @@ class MainPage(Handler):
     def render_front(self, error=""):
         entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC LIMIT 5")
         error = self.request.get("error")
-        self.render("front-page.html", error, entries_templates = entries)
+
+        self.render("front-page.html", entries_templates = entries)
 
     def get(self):
         self.render_front()
