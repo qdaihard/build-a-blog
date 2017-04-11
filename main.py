@@ -17,6 +17,7 @@
 import webapp2
 import os
 import jinja2
+import cgi
 
 from google.appengine.ext import db
 
@@ -59,14 +60,26 @@ class NewPost(Handler):
             self.render_add(title, blogpost, error)
 
 class MainPage(Handler):
-    def render_front(self):
+    def render_front(self, error=""):
         entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC LIMIT 5")
-        self.render("front-page.html", entries_templates = entries)
+        error = self.request.get("error")
+        self.render("front-page.html", error, entries_templates = entries)
 
     def get(self):
         self.render_front()
 
+class ViewPostHandler(Handler):
+    def get(self, id):
+        entry = db.GqlQuery("SELECT * FROM Blogpost WHERE ID = 'id'")
+        if entry:
+            self.render("blogpost.html", blogpost = Blogpost.get_by_id(int(id)))
+        else:
+            error = "This blogpost does not exist"
+            self.redirect("/blog/?error=" + cgi.escape(error))
+
+
 app = webapp2.WSGIApplication([
     ('/blog', MainPage),
-    ('/newpost', NewPost)
+    ('/newpost', NewPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)
