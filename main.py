@@ -24,6 +24,11 @@ from google.appengine.ext import db
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
 
+def get_posts(limit, offset):
+    result = []
+    entries = db.GqlQuery("SELECT * FROM Blogpost WHERE created DESC LIMIT limit OFFSET offset")
+
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.write(*a, **kw)
@@ -72,7 +77,7 @@ class MainPage(Handler):
 class ViewPostHandler(Handler):
     def get(self, id):
         entry = db.GqlQuery("SELECT * FROM Blogpost WHERE ID = 'id'")
-        if entry:
+        if Blogpost.get_by_id(int(id)):
             self.render("blogpost.html", blogpost = Blogpost.get_by_id(int(id)))
         else:
             error = "The blogpost entry you're trying to access does not exist"
