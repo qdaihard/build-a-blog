@@ -26,8 +26,8 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), a
 
 def get_posts(limit, offset):
     result = []
-    entries = db.GqlQuery("SELECT * FROM Blogpost WHERE created DESC LIMIT limit OFFSET offset")
-
+    entries = db.GqlQuery("SELECT * FROM Blogpost ORDER BY created DESC LIMIT " + str(limit) + " OFFSET " + str(offset))
+    return entries
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
